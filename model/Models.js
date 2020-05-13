@@ -1,9 +1,10 @@
 'use strict';
 
 const Models = {
+    
+    Users: require('./Users'),
     Technicians: require('./Technicians'),
     Tickets: require('./Tickets'),
-    Users: require('./Users'),
 };
 
 for (var model in Models) {

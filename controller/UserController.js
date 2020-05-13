@@ -25,18 +25,19 @@ class TicketsController {
             const body = req.body;
             const username = body['username']
             const password = body['password']
-
-            const user = await User.findByCredentials(username, password);
+            console.log(body)
+            const user = await Users.findByCredentials(username, password);
+         
             if (user.error) {
                 return res.status(401).send({ message: 'Invalid Authentication Credentials' });
             }
             const token = await user.generateAuthToken();
             const user_access = {
                 token: token.token,
-                refreshToken: token.refreshToken,
             }
             res.send({ user, user_access }).status(200);
         } catch (error) {
+            console.log(error)
             res.status(400).send({ message: error })
         }
     }

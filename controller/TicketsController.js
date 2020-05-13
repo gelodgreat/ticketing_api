@@ -26,6 +26,8 @@ class TicketsController {
             const data = {
                 message: body['message'],
                 solution: body['solution'],
+                status: body['status'],
+                name: body['name'],
             }
 
             const ticket = new Tickets(data);
@@ -46,6 +48,8 @@ class TicketsController {
             const data = {
                 message: body['message'],
                 solution: body['solution'],
+                status: body['status'],
+                name: body['name'],
             }
 
             const ticketData = await Tickets.findOneAndUpdate({ _id: new ObjectId(id) }, data)

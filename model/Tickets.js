@@ -12,6 +12,13 @@ const TicketsSchema = new Schema({
     solution: {
         type: String
     },
+    status: {
+        type: String
+    },
+    name: {
+        type: String
+    }
+
 }, {
     collection: 'tickets',
     strict: false,

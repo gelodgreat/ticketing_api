@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(cookieParser());
-app.use(auth);
+// app.use(auth);
 app.use('/', TechnicianAPI);
 app.use('/', TicketsAPI);
 app.use('/', UserAPI);

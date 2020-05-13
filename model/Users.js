@@ -20,6 +20,11 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: true,
+        validate: value => {
+            if (value.length < 4) {
+                throw new Error('Password should be atleast 6 characters!')
+            }
+        }
     },
     userType: {
         type: String,
@@ -28,7 +33,6 @@ const UserSchema = new Schema({
     },
     tokens: {
         type: String,
-        required: true
     },
 }, {
     collection: 'users',
@@ -62,10 +66,10 @@ UserSchema.method('generateAuthToken', async function () {
     }
 })
 
-UserSchema.statics.findByCredentials = async function (email, password) {
+UserSchema.statics.findByCredentials = async function (username, password) {
     // Search for a users by email and password.
     try {
-        const users = await Users.findOne({ email });
+        const users = await Users.findOne({ username });
         if (!users) {
             return { error: 'Invalid login credentials' }
         }
@@ -79,4 +83,15 @@ UserSchema.statics.findByCredentials = async function (email, password) {
     }
 }
 const Users = mongoose.model('users', UserSchema);
+Users.init().then(async () => {
+    try {
+        await Users.insertMany([{
+            "username": "admin",
+            "password": await bcrypt.hash("admin", 10),
+            "name": "Admin",
+            "userType": "Super Admin",
+        }]
+        )
+    } catch (error) { }
+})
 module.exports = Users;

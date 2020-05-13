@@ -15,6 +15,7 @@ class TechnicianController {
                 await Technicians.find(query).populate('tickets');
             res.send(technicians).status(200);
         } catch (error) {
+            console.log(error)
             res.send({ message: error }).status(400);
         }
     }
