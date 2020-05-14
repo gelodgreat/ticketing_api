@@ -15,5 +15,5 @@ router.route('/account/:id')
     .delete(account.deleteUser)
 
 router.post('/login', account.login)
-
+router.post('/logout', account.logout);
 module.exports = router;

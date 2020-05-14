@@ -25,9 +25,8 @@ class TicketsController {
             const body = req.body;
             const username = body['username']
             const password = body['password']
-            console.log(body)
             const user = await Users.findByCredentials(username, password);
-         
+
             if (user.error) {
                 return res.status(401).send({ message: 'Invalid Authentication Credentials' });
             }
@@ -39,6 +38,18 @@ class TicketsController {
         } catch (error) {
             console.log(error)
             res.status(400).send({ message: error })
+        }
+    }
+
+    async logout(req, res) {
+        try {
+            console.log(req.user)
+            req.user.token = ""
+            await req.user.save()
+            res.send({ 'message': 'Success Logout' }).status(200);
+        } catch (error) {
+            console.log(error)
+            res.status(500).send({ message: error })
         }
     }
 
