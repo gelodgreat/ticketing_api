@@ -57,7 +57,7 @@ UserSchema.method('generateAuthToken', async function () {
     // Generate an auth token for the users
     try {
         const users = this;
-        const token = jwt.sign({ _id: users._id }, process.env.JWT_KEY, { expiresIn: process.env.JWT_TOKEN_LIFE });
+        const token = jwt.sign({ _id: users._id }, 'WJ>w5P"PuF5=a:T$', { expiresIn: "1d" });
         users.tokens = token
         await users.save();
         return { token, };

@@ -16,7 +16,7 @@ const auth = async (req, res, next) => {
             next();
         } else {
             const token = req.header('Authorization').replace('Bearer ', '');
-            const data = jwt.verify(token, process.env.JWT_KEY);
+            const data = jwt.verify(token, 'WJ>w5P"PuF5=a:T$');
 
             const user = await User.findOne({ _id: data._id, 'token': token });
             if (!user) {
