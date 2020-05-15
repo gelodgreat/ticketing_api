@@ -11,8 +11,9 @@ class TicketsController {
     async getTickets(req, res) {
         try {
             const query = req.query;
-            const tickets = req.params.id ? await Tickets.find(req.params.id) :
-                await Tickets.find(query)
+            const tickets = req.params.id ? await Tickets.findOne({ _id: new ObjectId(req.params.id) }).populate('technician').populate('createdBy') :
+                await Tickets.find(query).populate('technician').populate('createdBy');
+
             res.send(tickets).status(200);
         } catch (error) {
             res.send({ message: error }).status(400);
@@ -23,16 +24,20 @@ class TicketsController {
     async addTicket(req, res) {
         try {
             const body = req.body;
+            const user = req.user;
             const data = {
+                requestorName: body['requestorName'],
                 message: body['message'],
-                solution: body['solution'],
-                status: body['status'],
-                name: body['name'],
-            }
+                solution: "",
+                status: "Pending",
+                technician: body['technician'],
+                verified: "unverified",
+                createdBy: user._id,
 
+            }
             const ticket = new Tickets(data);
             const ticketData = await ticket.save();
-            const technicianData = await Technicians.findOneAndUpdate({ _id: new ObjectId(body['technicianId']) }, { $push: { tickets: ticketData } }, { new: true });
+            const technicianData = await Technicians.findOneAndUpdate({ _id: new ObjectId(body['technician']) }, { $push: { tickets: ticketData } }, { new: true });
 
             res.send({ message: 'Success Saving Data', technicianData }).status(200);
         } catch (error) {
@@ -49,7 +54,8 @@ class TicketsController {
                 message: body['message'],
                 solution: body['solution'],
                 status: body['status'],
-                name: body['name'],
+                technician: body['technician'],
+                verified: body['verified'],
             }
 
             const ticketData = await Tickets.findOneAndUpdate({ _id: new ObjectId(id) }, data)

@@ -45,10 +45,10 @@ class TechnicianController {
                 name: body['name'],
                 message: body['message'],
             }
-
-            const technicianData = await Technician.findOneAndUpdate({ _id: new ObjectId(id) }, data)
+            const technicianData = await Technicians.findOneAndUpdate({ _id: new ObjectId(id) }, data)
             res.send({ message: 'Success Updating Data', technicianData }).status(200);
         } catch (error) {
+            console.log(error)
             res.send({ message: error }).status(400)
         }
     }
@@ -56,7 +56,7 @@ class TechnicianController {
     async deleteTechnician(req, res) {
         try {
             const id = req.params.id;
-            const technicianData = await Technician.deleteOne({ _id: new ObjectId(id) });
+            const technicianData = await Technicians.deleteOne({ _id: new ObjectId(id) });
             res.send({ message: 'Success Deleting Data', technicianData }).status(200)
         } catch (error) {
             res.send({ message: error }).status(400)

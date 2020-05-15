@@ -5,11 +5,11 @@ const router = express.Router();
 const UserController = require('../controller/UserController');
 const account = new UserController();
 
-router.route('/account')
+router.route('/users')
     .get(account.getUsers)
     .post(account.addUser)
 
-router.route('/account/:id')
+router.route('/user/:id')
     .get(account.getUsers)
     .put(account.updateUser)
     .delete(account.deleteUser)

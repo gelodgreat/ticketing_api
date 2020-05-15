@@ -4,9 +4,7 @@ const jwt = require('jsonwebtoken')
 const Models = require('../model/Models');
 const User = Models['Users'];
 const exemptedPath = [
-    '/users/auth/login',
-    '/users/refreshToken',
-    '/test',
+    '/login',
 ]
 
 const auth = async (req, res, next) => {
@@ -17,8 +15,8 @@ const auth = async (req, res, next) => {
         } else {
             const token = req.header('Authorization').replace('Bearer ', '');
             const data = jwt.verify(token, 'WJ>w5P"PuF5=a:T$');
+            const user = await User.findOne({ _id: data._id, 'tokens': token });
 
-            const user = await User.findOne({ _id: data._id, 'token': token });
             if (!user) {
                 throw new Error()
             }
@@ -29,7 +27,6 @@ const auth = async (req, res, next) => {
         }
 
     } catch (error) {
-        console.log(error)
         if (error.name === "TokenExpiredError") {
             await removeToken(req)
             res.status(401).send({ message: 'Access Expired' });

@@ -29,7 +29,6 @@ const UserSchema = new Schema({
     userType: {
         type: String,
         required: true,
-        enum: ["Admin", "Super Admin"]
     },
     tokens: {
         type: String,
@@ -85,13 +84,26 @@ UserSchema.statics.findByCredentials = async function (username, password) {
 const Users = mongoose.model('users', UserSchema);
 Users.init().then(async () => {
     try {
-        await Users.insertMany([{
-            "username": "admin",
-            "password": await bcrypt.hash("admin", 10),
-            "name": "Admin",
-            "userType": "Super Admin",
-        }]
-        )
+        await Users.insertMany([
+            {
+                "username": "superadmin",
+                "password": await bcrypt.hash("superadmin", 10),
+                "name": "Super Admin",
+                "userType": "SuperAdmin",
+            },
+            {
+                "username": "admin",
+                "password": await bcrypt.hash("admin", 10),
+                "name": "Admin",
+                "userType": "Admin",
+            },
+            {
+                "username": "guest",
+                "password": await bcrypt.hash("guest", 10),
+                "name": "Guest",
+                "userType": "Guest",
+            }
+        ])
     } catch (error) { }
 })
 module.exports = Users;
