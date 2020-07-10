@@ -25,10 +25,20 @@ const TicketsSchema = new Schema({
     verified: {
         type: String
     },
+    verifiedBy: {
+        type: ObjectId,
+        ref: 'users',
+    },
+    verifiedAt: {
+        type: String
+    },
+    fixedAt: {
+        type: String
+    },
     createdBy: {
         type: ObjectId,
         ref: 'users',
-    }
+    },
 }, {
     collection: 'tickets',
     strict: false,

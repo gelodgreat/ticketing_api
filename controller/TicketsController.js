@@ -3,7 +3,7 @@ const Models = require('../model/Models')
 const Technicians = Models['Technicians'];
 const Tickets = Models['Tickets']
 const ObjectId = require('mongodb').ObjectID;
-
+const moment = require('moment');
 
 class TicketsController {
     constructor() { }
@@ -11,11 +11,21 @@ class TicketsController {
     async getTickets(req, res) {
         try {
             const query = req.query;
-            const tickets = req.params.id ? await Tickets.findOne({ _id: new ObjectId(req.params.id) }).populate('technician').populate('createdBy') :
-                await Tickets.find(query).populate('technician').populate('createdBy');
-
+            const tickets = req.params.id ? await Tickets
+                .findOne({ _id: new ObjectId(req.params.id) })
+                .populate('technician')
+                .populate('verifiedBy')
+                .populate('createdBy')
+                .sort({ createdAt: -1 })
+                :
+                await Tickets.find(query)
+                    .populate('technician')
+                    .populate('createdBy')
+                    .populate('verifiedBy')
+                    .sort({ createdAt: -1 });
             res.send(tickets).status(200);
         } catch (error) {
+            console.log(error)
             res.send({ message: error }).status(400);
         }
     }
@@ -33,7 +43,7 @@ class TicketsController {
                 technician: body['technician'],
                 verified: "unverified",
                 createdBy: user._id,
-
+                createdAt: moment().format('YYYY/MM/D hh:mm')
             }
             const ticket = new Tickets(data);
             const ticketData = await ticket.save();
@@ -50,14 +60,25 @@ class TicketsController {
         try {
             var id = req.params.id;
             const body = req.body;
+            const user = req.user;
+
             const data = {
                 message: body['message'],
                 solution: body['solution'],
-                status: body['status'],
+
                 technician: body['technician'],
                 verified: body['verified'],
+                verifiedBy: body['verified'] === "verified" ? user._id : '',
+                verifiedAt: body['verified'] === "verified" ? moment().format('YYYY/MM/D hh:mm') : '',
+                fixedAt: body['solution'] ? moment().format('YYYY/MM/D hh:mm') : '',
             }
 
+            if (body['verified'] === "verified" && !body['solution']) {
+                data['status'] = "Ongoing"
+            }
+            if (body['verified'] === "verified" && body['solution']) {
+                data['status'] = "Fixed"
+            }
             const ticketData = await Tickets.findOneAndUpdate({ _id: new ObjectId(id) }, data)
             res.send({ message: 'Success Updating Data', ticketData }).status(200);
         } catch (error) {
