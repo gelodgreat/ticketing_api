@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-// const DatabaseConnection = "mongodb://admin:admin@localhost:27017/ticketing?authSource=admin?retryWrites=true&w=majority"
+// const DatabaseConnection = `mongodb://admin:${process.env.MONGO_PASSWORD}@localhost:27017/ticketing?authSource=admin?retryWrites=true&w=majority`
 const DatabaseConnection = "mongodb+srv://admin:admin@clusterx-fcfrz.gcp.mongodb.net/ticketing"
 try {
     mongoose.connect(DatabaseConnection, {

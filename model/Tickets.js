@@ -9,6 +9,9 @@ const TicketsSchema = new Schema({
     requestorName: {
         type: String
     },
+    ticketNumber: {
+        type: String
+    },
     message: {
         type: String
     },

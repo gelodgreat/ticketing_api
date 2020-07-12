@@ -6,7 +6,10 @@ const ObjectId = require('mongodb').ObjectID;
 const moment = require('moment');
 
 class TicketsController {
-    constructor() { }
+    constructor() {
+        this.genetrateTicket = this.genetrateTicket.bind(this);
+        this.addTicket = this.addTicket.bind(this)
+    }
 
     async getTickets(req, res) {
         try {
@@ -30,6 +33,14 @@ class TicketsController {
         }
     }
 
+    async genetrateTicket() {
+        const ticketNumber = `CEU${Math.floor((Math.random() * 1000000) + 1)}`
+        const checkTicketNumber = await Tickets.findOne({ ticketNumber: ticketNumber })
+        if (checkTicketNumber) {
+            this.genetrateTicket()
+        }
+        return ticketNumber
+    }
 
     async addTicket(req, res) {
         try {
@@ -43,7 +54,8 @@ class TicketsController {
                 technician: body['technician'],
                 verified: "unverified",
                 createdBy: user._id,
-                createdAt: moment().format('YYYY/MM/D hh:mm')
+                createdAt: moment().format('YYYY/MM/D hh:mm'),
+                ticketNumber: await this.genetrateTicket()
             }
             const ticket = new Tickets(data);
             const ticketData = await ticket.save();
